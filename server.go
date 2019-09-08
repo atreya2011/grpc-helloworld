@@ -6,7 +6,7 @@ import (
 	"log"
 	"net"
 
-	"gitlab.com/atreya2011/grpc-helloworld/helloworld"
+	"github.com/atreya2011/grpc-helloworld/helloworld"
 	"google.golang.org/grpc"
 )
 
