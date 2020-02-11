@@ -7,13 +7,16 @@ import "google/api/annotations.proto";
 service Greeter {
   rpc SayHello(HelloRequest) returns (HelloResponse) {
     option (google.api.http) = {
-      get: "/v1/hello/{name}"
+      post: "/v1/hello/{name}"
+      body: "age"
     };
   }
 }
 
 message HelloRequest {
-  string name = 1;
+  string name     = 1;
+  string age      = 2;
+  int64  dob_year = 3;
 }
 
 message HelloResponse {

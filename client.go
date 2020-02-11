@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"flag"
-	"fmt"
 	"log"
 
 	"github.com/atreya2011/grpc-helloworld/helloworld"
@@ -11,12 +9,10 @@ import (
 	"google.golang.org/grpc"
 )
 
-var addrFlag = flag.String("addr", "localhost:5000", "server address host:post")
-
-func main() {
+func client() {
 	// Connect with the grpc server listening on port 5000 using an insecure connection
 	// This creates a new connection
-	conn, err := grpc.Dial(*addrFlag, grpc.WithInsecure())
+	conn, err := grpc.Dial(":5000", grpc.WithInsecure())
 	// Handle the error as usual
 	if err != nil {
 		log.Fatalln(err)
@@ -25,6 +21,9 @@ func main() {
 	defer conn.Close()
 
 	client := helloworld.NewGreeterClient(conn)
-	res, err := client.SayHello(context.Background(), &helloworld.HelloRequest{Name: "atreya"})
-	fmt.Printf("Response : %v\n", res.GetMessage())
+	res, err := client.SayHello(context.Background(), &helloworld.HelloRequest{Name: "atreya", Age: "35", DobYear: 1984})
+	if err != nil {
+		log.Fatalln(err)
+	}
+	log.Printf("Response : %v\n", res.GetMessage())
 }
