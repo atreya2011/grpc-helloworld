@@ -5,8 +5,11 @@ import (
 	"log"
 	"net"
 	"testing"
+	"time"
 
 	"github.com/atreya2011/grpc-helloworld/helloworld"
+	hwmock "github.com/atreya2011/grpc-helloworld/mock_helloworld"
+	"github.com/golang/mock/gomock"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/test/bufconn"
 )
@@ -47,4 +50,21 @@ func TestSayHello(t *testing.T) {
 	if resp.GetMessage() != want {
 		t.Fatalf("got %s, want %s", resp.GetMessage(), want)
 	}
+}
+
+func TestSayHelloAgain(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockGreeterClient := hwmock.NewMockGreeterClient(ctrl)
+	mockGreeterClient.EXPECT().SayHello(
+		gomock.Any(),
+		gomock.Any(),
+	).Return(&helloworld.HelloResponse{Message: "Mocked Interface"}, nil)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := mockGreeterClient.SayHello(ctx, &helloworld.HelloRequest{Name: "unit_test"})
+	if err != nil || r.Message != "Mocked Interface" {
+		t.Errorf("mocking failed")
+	}
+	t.Log("Reply : ", r.Message)
 }
